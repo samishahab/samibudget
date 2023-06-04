@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAMI BUDGET </title>
+    <style>
+       *{
+    padding: 0;
+    margin: 0px ;
+    /* font-family: Georgia, 'Times New Roman', Times, serif; */
+    box-sizing: border-box;
+} 
+
+body{
+    background-color: rgb(254, 254, 254);
+    
+}
+
+.budget_app{
+    width: 80%;
+    font-size: 17px;
+    max-width: 40em;
+    margin: 2em auto;}
+
+.container{
+    width: 100%;}
+    
+    .sub_container{
+        width: 70%;
+        display: inline-block;
+        grid-template-columns: 1fr 1fr;
+        gap: 3em;
+    }
+
+    .flex{
+        display: flex;
+        align-items: center;
+    }
+
+    .flex-space{
+         display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .budget_app h2{
+        color: rgb(57, 57, 181);
+        font-weight: 550;
+        margin-bottom: 0.5em;
+}
+.container input{
+    display: block;
+    padding: 0.5em 0.5em;
+    border: 1px solid black;
+    border-radius: 3px;
+    width: 60%;
+    height: 15%;
+    font-weight: 350;
+    color: rgb(57, 57, 181);
+    margin-bottom: 0.5;
+}
+.container input:focus{
+    border-color: rgb(197, 197, 254);
+}
+.amount-container,
+.expense-Conatiner{
+    background-color: #b4aaaa;
+    padding: 1em 1em;
+    box-shadow: 0.4em 0.8em 1.1em black;
+    margin: 2em;                                                              
+}
+
+.output-container{
+    background-color: rgb(150, 150, 157);
+    color: rgb(57, 57, 181);
+    border-radius: 4px;
+    margin: 2em;
+    padding: 1em;
+  
+    box-shadow: 0em 0.6em 1.1em rgb(17, 17, 17); ;
+}
+
+.output-container p{
+    margin: 0.5em;
+    font-weight: 500px;
+     text-align: center; 
+}
+.output-container span{
+    display: block;
+    text-align:  center;
+    font-weight: 800;
+    color: rgb(255, 255, 255);
+}
+
+.submit{
+    background-color: rgb(77, 77, 224);
+    border-radius: 0.2em;
+    margin-top: 1em;
+    font-size: 1em;
+    padding: 0.4em 0.6em;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    color: white;
+}
+
+.submit:hover{
+    font-size: 1.1em}
+.list{
+    background-color: #b4aaaa;
+    color: black;
+    padding: 1.1em 1em;
+    box-shadow: 0em 0.3em .8em #121111;
+    border-radius: 0.4em;
+}
+.hide{
+    display: none;
+}
+.error{
+color: red;
+}
+
+.date{
+   /* justify-content: space-between; */
+   /* display: flex; */
+   justify-content: space-between;
+   align-items: center;
+   margin: 0.7em 0.5em;
+   padding: 1em 0.8em;
+   border-radius: 0.5em;
+   background-color: blue;
+}
+
+.due-date{
+    margin: 0.5em;
+}
+    </style>
+    
+    
+</head>
+<body>
+  
+
+    <div class="budget_app">
+        <div class="container">
+            <div class="sub_container">
+
+              <div class="list">
+                <h2>EXPENSE LIST</h2> 
+                 <div class="list-container" id="list">
+                 </div>
+             </div>
+
+                <div class="amount-container">
+                    <h2> BUDGET APP</h2>
+                    <P class="hide error" id="budget-error"> This option  must be filled </P>
+                    <input type="number" id="total-number" placeholder="Enter Total Number"> <br>
+                    <button class="submit" id="total-amount-button">set budget</button>
+                </div>
+
+                <div class="expense-Conatiner"> 
+                    <h2> Expense</h2>
+                    <p class="expense_error" id="product-tittle-error">This option must be filled</p>
+                    <input type="text" id="product-tittle" placeholder="Enter Item Name"> <br/>
+                    <input type="number" id="user-amount" placeholder="Enter item value"> <br>
+                    <button class="submit" id="check-amount"> Check Amount</button>
+                </div>
+            </div>
+
+            <div class="date">
+              Due Date:
+              <input class="due-date" type="date" id="due-date">
+              Payment-Date
+              <input class="due-date" type="date" id="payment-date">
+            </div>
+                <!-- budget ouyput  -->
+            <div class=" output-container flex-space">
+                <div>
+                    <p>Total Budget</p>
+                    <span id="amount">0</span>
+                </div>
+
+                <div>
+                    <p>Expenses</p>
+                    <span id="expenditure-value">0</span>
+                </div>
+                <div>
+                    <p>Total Balance</p>
+                    <span id="balance-amount">0</span>
+                </div>
+            </div>
+
+              <!-- <div class="list">
+               <h2>EXPENSE LIST</h2> 
+                <div class="list-container" id="list">
+                </div> -->
+        </div>
+        </div>
+    </div>
+
+   <script>
+    const expenseList = document.getElementById('list');
+const productTitleInput = document.getElementById('product-tittle');
+const userAmountInput = document.getElementById('user-amount');
+const expenditureValue = document.getElementById('expenditure-value');
+const balanceAmount = document.getElementById('balance-amount');
+const totalAmountInput = document.getElementById('total-number');
+const totalAmountButton = document.getElementById('total-amount-button');
+const expenseError = document.getElementById('product-tittle-error');
+
+let expenses = [];
+let totalBudget = 0;
+
+// Event listener for setting the total budget
+totalAmountButton.addEventListener('click', () => {
+  const inputAmount = parseFloat(totalAmountInput.value);
+
+  if (isNaN(inputAmount) || inputAmount <= 0) {
+    document.getElementById('budget-error').classList.remove('hide');
+  } else {
+    document.getElementById('budget-error').classList.add('hide');
+    totalBudget = inputAmount;
+    document.getElementById('amount').textContent = totalBudget.toFixed(2);
+    totalAmountInput.value = '';
+
+    // Update balance amount
+    calculateBalance();
+  }
+});
+
+// Event listener for checking the expense amount
+document.getElementById('check-amount').addEventListener('click', () => {
+  const title = productTitleInput.value.trim();
+  const amount = parseFloat(userAmountInput.value);
+
+  if (title === '') {
+    expenseError.classList.remove('hide');
+  } else {
+    expenseError.classList.add('hide');
+    const expense = {
+      title: title,
+      amount: amount.toFixed(2)
+    };
+    expenses.push(expense);
+
+    // Add the expense to the expense list
+    const expenseItem = document.createElement('div');
+    expenseItem.classList.add('expense-item');
+    expenseItem.innerHTML = `<p>${expense.title}</p><span>$${expense.amount}</span>`;
+    expenseList.appendChild(expenseItem);
+
+    // Clear input fields
+    productTitleInput.value = '';
+    userAmountInput.value = '';
+
+    // Update expenditure value and balance amount
+    calculateExpenditure();
+    calculateBalance();
+  }
+});
+
+// Calculate total expenditure
+function calculateExpenditure() {
+  let expenditure = 0;
+  for (const expense of expenses) {
+    expenditure += parseFloat(expense.amount);
+  }
+  expenditureValue.textContent = expenditure.toFixed(2);
+}
+
+// Calculate balance amount
+function calculateBalance() {
+  const expenditure = parseFloat(expenditureValue.textContent);
+  const balance = totalBudget - expenditure;
+  balanceAmount.textContent = balance.toFixed(2);
+}
+   </script>
+
+</body>
+
+</html>
